@@ -17,7 +17,6 @@ import { LogoBrand } from "../../../../components/LogoBrand";
 import { useZBrandInfo } from "../../../../stores/useZBrandStore";
 import { InstallButton } from "./InstallButton";
 
-
 export const MainLoginForm = () => {
   const { mode, theme } = useZTheme();
   const { t } = useTranslation();

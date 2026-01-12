@@ -1,28 +1,16 @@
-import jwt from "jsonwebtoken";
-import { AppError } from "../errors/AppError";
-import { STATUS_CODE } from "../constants/statusCode";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
+// import { AppError } from "../errors/AppError";
 
-const secret = process.env.JWT_SECRET || "secret";
+const secret = process.env.JWT_SECRET;
 
-interface IPayload {
-  idUser: string;
-  email: string;
-  role: string;
-}
+interface IPayload {}
 
-export const genToken = (payload: IPayload) => {
-  const expiresIn: string | number = process.env.JWT_EXPIRES_IN || "1d";
-
-  return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
-};
+export const genToken = (payload: IPayload) => {};
 
 export const verifyToken = (token: string) => {
   try {
-    return jwt.verify(token, secret) as IPayload;
+    return; // data;
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      throw new AppError("Token expirado", STATUS_CODE.UNAUTHORIZED);
-    }
-    throw new AppError("Token inválido", STATUS_CODE.UNAUTHORIZED);
+    // throws new AppError(ERROR_MESSAGE.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
   }
 };

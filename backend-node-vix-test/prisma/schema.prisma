@@ -7,10 +7,9 @@ generator jsonSchema {
   output   = "../src/swagger/schemas"
 }
 
-// generator dbml {
-//   provider = "prisma-dbml-generator"
-//   output   = "./src/dbml"
-// }
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 datasource db {
   provider = "mysql"
@@ -74,7 +73,7 @@ model user {
   idUser        String    @id @default(uuid())
   username      String
   password      String
-  email         String    @unique
+  email         String
   profileImgUrl String?
   role          ERole     @default(member)
   idBrandMaster Int?

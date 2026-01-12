@@ -48,7 +48,7 @@ export const useLogin = () => {
     }
 
     const response = await api.post<IUserLoginResponse>({
-      url: "/auth/login",
+      url: "/user/login",
       data: {
         username: username || undefined,
         password,
@@ -63,7 +63,6 @@ export const useLogin = () => {
       return;
     }
     if (!response.data.user?.isActive) {
-      console.log("User isActive:", response.data.user?.isActive);
       setIsOpenModalUserNotActive(true);
       return;
     }
@@ -79,10 +78,6 @@ export const useLogin = () => {
       userPhoneNumber: response.data.user.userPhoneNumber,
     });
     setLoginTime(new Date());
-
-    setLoginTime(new Date());
-    navigate("/");
-
   };
 
   const goLogout = () => {

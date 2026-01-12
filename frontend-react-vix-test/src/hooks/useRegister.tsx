@@ -46,21 +46,15 @@ export const useRegister = () => {
       return;
     }
 
-    const payload: any = {
-      username,
-      email,
-      password,
-    };
-
-    if (idBrand) {
-      payload.idBrandMaster = idBrand;
-    }
-
     const response = await api.post({
-      url: "/auth/register",
-      data: payload,
+      url: "/user",
+      data: {
+        username,
+        password,
+        email,
+        idBrandMaster: idBrand,
+      },
     });
-
 
     if (response.error) {
       toast.error(response.message);

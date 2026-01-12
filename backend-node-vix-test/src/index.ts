@@ -8,7 +8,6 @@ events.EventEmitter.defaultMaxListeners = 20;
 const port = process.env.PORT || 3001;
 const host = "localhost";
 
-
 if (process.env.NODE_ENV !== "test") {
   (async () => {
     const server = http.createServer(app);

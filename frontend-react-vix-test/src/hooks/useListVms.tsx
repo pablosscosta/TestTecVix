@@ -45,27 +45,13 @@ export const useListVms = () => {
 
     setIsLoading(false);
     if (response.error) {
-      const message = response.message?.toLowerCase() || "";
-
-      // 👉 Somente erros de sessão derrubam login
-      if (
-        message.includes("expired") ||
-        message.includes("invalid token") ||
-        message.includes("unauthorized")
-      ) {
-        toast.error("Sessão expirada. Faça login novamente.");
-        goLogout();
-        return;
-      }
-
-      // 👉 Erro funcional / permissão
-      toast.error(response.message || "Erro ao carregar VMs");
+      if (!response.message.includes("expired")) toast.error(response.message);
       setVmList([]);
       setVmTotalCount(0);
       setTotalCountVMs(0);
+      goLogout();
       return;
     }
-
 
     setVmList(response.data?.result);
     setVmTotalCount(response.data?.totalCount);
