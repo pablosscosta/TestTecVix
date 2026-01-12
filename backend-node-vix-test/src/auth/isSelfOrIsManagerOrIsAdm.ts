@@ -11,11 +11,20 @@ export const isSelfOrIsManagerOrIsAdm = (
   next: NextFunction,
 ) => {
   const user = req.user as user;
-  const idUserFromParams = Number(req.params.idUser);
-  // Logic to check if the user is self, manager, or admin
+  const idUserFromParams = req.params.idUser; // UUID é string
 
-  if (user.role !== "admin" && user.role !== "manager") {
-    throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
+  // Admin ou Manager sempre passam
+  if (user.role === "admin" || user.role === "manager") {
+    return next();
   }
-  return next();
+
+  // Member só passa se for o próprio id
+  if (user.role === "member") {
+    if (user.idUser === idUserFromParams) {
+      return next();
+    }
+    throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
+  }
+
+  throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
 };

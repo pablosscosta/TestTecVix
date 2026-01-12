@@ -80,8 +80,8 @@ Você pode criar, instalar e utilizar outras bibliotecas, porém o **foco princi
 > **📢 IMPORTANTE**: Seu repositório fork **DEVE SER PÚBLICO** para que a equipe da Vituax possa avaliar seu trabalho.
 
 Certifique-se de que:
-- [ ] Seu repositório está configurado como **público** (não privado)
-- [ ] A equipe da Vituax consegue acessar o link sem necessidade de permissões especiais
+- [x] Seu repositório está configurado como **público** (não privado)
+- [x] A equipe da Vituax consegue acessar o link sem necessidade de permissões especiais
 
 ### 📤 Entrega do Teste
 
@@ -452,20 +452,20 @@ git commit -m "docs: atualiza README com credenciais de teste"
 
 ### 📋 Configuração Inicial
 
-- [ ] Criar arquivo `.env` baseado no `.env.example` (backend)
-- [ ] Criar arquivo `.env` baseado no `.env.exemple` (frontend)
+- [x] Criar arquivo `.env` baseado no `.env.example` (backend)
+- [x] Criar arquivo `.env` baseado no `.env.exemple` (frontend)
 
 ---
 
 ### 🔐 Autenticação e Autorização
 
-- [ ] Implementar as rotas de CRUD para usuários
-- [ ] Implementar rota de login do usuário
-- [ ] Implementar tela de login `/login`
-- [ ] Implementar rota de register do usuário
+- [x] Implementar as rotas de CRUD para usuários
+- [x] Implementar rota de login do usuário
+- [x] Implementar tela de login `/login`
+- [x] Implementar rota de register do usuário
 - [ ] Implementar tela de register `/register`
-- [ ] Implementar autenticação com token JWT
-- [ ] Proteger as rotas da aplicação (exceto login e register) para que somente usuários logados possam acessar
+- [x] Implementar autenticação com token JWT
+- [x] Proteger as rotas da aplicação (exceto login e register) para que somente usuários logados possam acessar
 - [ ] Adicionar credenciais de usuários de teste no README e/ou `.env.example`
 
 ---

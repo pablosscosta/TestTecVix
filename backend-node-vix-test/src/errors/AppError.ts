@@ -1,14 +1,11 @@
-export class AppError {
-  #_message: string;
+export class AppError extends Error {
   #_status: number;
 
   constructor(message: string, status: number) {
-    this.#_message = message;
+    super(message);
     this.#_status = status;
-  }
 
-  get message() {
-    return this.#_message;
+    Object.setPrototypeOf(this, AppError.prototype);
   }
 
   get status() {

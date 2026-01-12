@@ -26,6 +26,8 @@ import { TextRob14Font1Xs } from "../../../../components/Text1Xs";
 import { TerminalIcon } from "../../../../icons/TerminalIcon";
 import { MonitorIcon } from "../../../../icons/MonitorIcon";
 import { IVMTask, taskMock } from "../../../../types/VMTypes";
+import { usePermissions } from "../../../../hooks/usePermissions";
+
 
 export interface IVmCardProps {
   vmId: number;
@@ -52,7 +54,14 @@ export const VmCard = ({
   owner,
 }: IVmCardProps) => {
   const { mode, theme } = useZTheme();
-  const { t } = useTranslation();
+  const { t } = useTranslation();  
+  const {
+    canRenameVM,
+    canControlVM,
+    canResizeDisk,
+    canAccessTerminal,
+    canAccessMonitor,
+  } = usePermissions();
   const [vmNameState, setVmNameState] = useState<string | number>(vmName);
   const [cpuState, setCpuState] = useState<number | string>(cpu);
   const [memoryState, setMemoryState] = useState<number | string>(memory);
@@ -193,21 +202,23 @@ export const VmCard = ({
           >
             {vmNameState}
           </TextRob20Font1MC>
-          <IconButton
-            onClick={() => setOpenModal(true)}
-            sx={{
-              backgroundColor: theme[mode].blue,
-              padding: "2px",
-              width: "20px",
-              height: "20px",
-              "&:hover": {
+          {canRenameVM && (
+            <IconButton
+              onClick={() => setOpenModal(true)}
+              sx={{
                 backgroundColor: theme[mode].blue,
-                opacity: 0.8,
-              },
-            }}
-          >
-            <PencilIcon fill={"#FFFFFF"} />
-          </IconButton>
+                padding: "2px",
+                width: "20px",
+                height: "20px",
+                "&:hover": {
+                  backgroundColor: theme[mode].blue,
+                  opacity: 0.8,
+                },
+              }}
+            >
+              <PencilIcon fill={"#FFFFFF"} />
+            </IconButton>
+          )}
         </Stack>
         {/* Status */}
         <Stack mt={"12px"}>
@@ -218,73 +229,75 @@ export const VmCard = ({
           />
         </Stack>
         {/* Actions */}
-        <Stack
-          sx={{
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "center",
-            mt: "16px",
-          }}
-        >
-          {/* Start */}
-          <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting}
-            onClick={handleStart}
-            className="w-full"
+        {canControlVM && (
+          <Stack
             sx={{
-              borderRadius: "8px 0px 0px 8px",
-              padding: "0px",
-              backgroundColor: actionExec ? theme[mode].blue : "transparent",
-              border:
-                checkStatus(statusState, taskState?.action).isStopped ||
-                checkStatus(statusState, taskState?.action).isPaused
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "center",
+              mt: "16px",
+            }}
+          >
+            {/* Start */}
+            <Btn
+              disabled={checkStatus(statusState, taskState?.action).isWaiting}
+              onClick={handleStart}
+              className="w-full"
+              sx={{
+                borderRadius: "8px 0px 0px 8px",
+                padding: "0px",
+                backgroundColor: actionExec ? theme[mode].blue : "transparent",
+                border:
+                  checkStatus(statusState, taskState?.action).isStopped ||
+                  checkStatus(statusState, taskState?.action).isPaused
+                    ? "1px solid"
+                    : "0px solid",
+                borderColor: actionExec ? theme[mode].blue : theme[mode].tertiary,
+              }}
+            >
+              <TextRob12Font2Xs
+                sx={{
+                  color: actionExec ? theme[mode].btnText : theme[mode].tertiary,
+                  fontWeight: actionExec ? "500" : "400",
+                  letterSpacing: "0.5px",
+                  lineHeight: "22px",
+                }}
+              >
+                {t("home.start")}
+              </TextRob12Font2Xs>
+            </Btn>
+            {/* Pause */}
+            <Btn
+              disabled={checkStatus(statusState, taskState?.action).isWaiting}
+              onClick={handlePaused}
+              className="w-full"
+              sx={{
+                borderRadius: "0px 8px 8px 0px",
+                padding: "0px",
+                backgroundColor: actionPause
+                  ? theme[mode].blueMedium
+                  : "transparent",
+                border: checkStatus(statusState, taskState?.action).isRunning
                   ? "1px solid"
                   : "0px solid",
-              borderColor: actionExec ? theme[mode].blue : theme[mode].tertiary,
-            }}
-          >
-            <TextRob12Font2Xs
-              sx={{
-                color: actionExec ? theme[mode].btnText : theme[mode].tertiary,
-                fontWeight: actionExec ? "500" : "400",
-                letterSpacing: "0.5px",
-                lineHeight: "22px",
+                borderColor: actionPause
+                  ? theme[mode].blueMedium
+                  : theme[mode].tertiary,
               }}
             >
-              {t("home.start")}
-            </TextRob12Font2Xs>
-          </Btn>
-          {/* Pause */}
-          <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting}
-            onClick={handlePaused}
-            className="w-full"
-            sx={{
-              borderRadius: "0px 8px 8px 0px",
-              padding: "0px",
-              backgroundColor: actionPause
-                ? theme[mode].blueMedium
-                : "transparent",
-              border: checkStatus(statusState, taskState?.action).isRunning
-                ? "1px solid"
-                : "0px solid",
-              borderColor: actionPause
-                ? theme[mode].blueMedium
-                : theme[mode].tertiary,
-            }}
-          >
-            <TextRob12Font2Xs
-              sx={{
-                color: actionPause ? theme[mode].btnText : theme[mode].tertiary,
-                letterSpacing: "0.5px",
-                fontWeight: actionPause ? "500" : "400",
-                lineHeight: "22px",
-              }}
-            >
-              {t("home.stop")}
-            </TextRob12Font2Xs>
-          </Btn>
-        </Stack>
+              <TextRob12Font2Xs
+                sx={{
+                  color: actionPause ? theme[mode].btnText : theme[mode].tertiary,
+                  letterSpacing: "0.5px",
+                  fontWeight: actionPause ? "500" : "400",
+                  lineHeight: "22px",
+                }}
+              >
+                {t("home.stop")}
+              </TextRob12Font2Xs>
+            </Btn>
+          </Stack>
+        )}
         {/* Owner */}
         <Stack
           sx={{
@@ -390,22 +403,34 @@ export const VmCard = ({
             >
               {t("home.disk")}
             </TextRob16FontL>
-            <IconButton
-              onClick={() => setOpenModalSlider(true)}
-              sx={{
-                backgroundColor: theme[mode].grayLight,
-                flexDirection: "row",
-                padding: "0px 4px",
-                borderRadius: "4px",
-                marginRight: "-4px",
-                gap: "6px",
-                "&:hover": {
+
+            {canResizeDisk ? (
+              <IconButton
+                onClick={() => setOpenModalSlider(true)}
+                sx={{
                   backgroundColor: theme[mode].grayLight,
-                  opacity: 0.8,
-                },
-              }}
-            >
-              <PencilIcon fill={theme[mode].primary} />
+                  flexDirection: "row",
+                  padding: "0px 4px",
+                  borderRadius: "4px",
+                  marginRight: "-4px",
+                  gap: "6px",
+                  "&:hover": {
+                    backgroundColor: theme[mode].grayLight,
+                    opacity: 0.8,
+                  },
+                }}
+              >
+                <PencilIcon fill={theme[mode].primary} />
+                <TextRob16FontL
+                  sx={{
+                    fontWeight: "500",
+                    color: theme[mode].primary,
+                  }}
+                >
+                  {diskState}GB
+                </TextRob16FontL>
+              </IconButton>
+            ) : (
               <TextRob16FontL
                 sx={{
                   fontWeight: "500",
@@ -414,14 +439,16 @@ export const VmCard = ({
               >
                 {diskState}GB
               </TextRob16FontL>
-            </IconButton>
+            )}
           </Stack>
+
           <Divider
             sx={{
               borderColor: theme[mode].grayLight,
               my: "4px",
             }}
           />
+
           {/* System */}
           <Stack
             sx={{
