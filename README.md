@@ -472,9 +472,9 @@ git commit -m "docs: atualiza README com credenciais de teste"
 
 ### 🗄️ Updates no Banco de Dados
 
-- [ ] Adicionar coluna `pass` na tabela `VM` (senha da VM, respeitando regras de segurança)
-- [ ] Adicionar coluna `location` do tipo `ETaskLocation` na tabela `VM`
-- [ ] Adicionar coluna `hasBackup` na tabela `VM`
+- [x] Adicionar coluna `pass` na tabela `VM` (senha da VM, respeitando regras de segurança)
+- [x] Adicionar coluna `location` do tipo `ETaskLocation` na tabela `VM`
+- [x] Adicionar coluna `hasBackup` na tabela `VM`
 
 ---
 
