@@ -61,10 +61,13 @@ model vM {
   hasBackup     Boolean?     @default(false)
   idBrandMaster Int?
   status        EVMStatus?
+  location      ETaskLocation? 
   createdAt     DateTime?    @default(now()) @db.DateTime(0)
   updatedAt     DateTime?    @default(now()) @db.DateTime(0)
   deletedAt     DateTime?    @db.DateTime(0)
   os            String?
+  pass          String?
+
   brandMaster   brandMaster? @relation(fields: [idBrandMaster], references: [idBrandMaster])
 
   @@index([idBrandMaster], map: "vM_idBrandMaster_fkey")
@@ -99,4 +102,9 @@ enum ERole {
   admin
   manager
   member
+}
+
+enum ETaskLocation {
+  LOCAL
+  CLOUD
 }

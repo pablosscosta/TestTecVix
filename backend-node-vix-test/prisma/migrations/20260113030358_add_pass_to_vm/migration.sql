@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `vM` ADD COLUMN `pass` VARCHAR(191) NULL;

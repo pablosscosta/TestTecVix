@@ -241,6 +241,16 @@
             "PAUSED"
           ]
         },
+        "location": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "LOCAL",
+            "CLOUD"
+          ]
+        },
         "createdAt": {
           "type": [
             "string",
@@ -263,6 +273,12 @@
           "format": "date-time"
         },
         "os": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pass": {
           "type": [
             "string",
             "null"
