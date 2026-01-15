@@ -105,6 +105,7 @@ enum ERole {
 }
 
 enum ETaskLocation {
-  LOCAL
-  CLOUD
+  usa_miami
+  bre_barueri
 }
+
