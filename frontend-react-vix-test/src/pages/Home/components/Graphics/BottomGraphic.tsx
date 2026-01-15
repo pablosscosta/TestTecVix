@@ -9,27 +9,48 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   ComposedChart,
-  Bar, // Para as linhas de threshold
+  Bar,
 } from "recharts";
 import { Stack, Typography } from "@mui/material";
 import { useZTheme } from "../../../../stores/useZTheme";
 import { useTranslation } from "react-i18next";
-
 import { useZGlobalVar } from "../../../../stores/useZGlobalVar";
 import { IFormatData } from "../../../../types/socketType";
 
+/**
+ * Gera dados mockados de uso de Memória
+ */
+const generateMockMemoryData = (): IFormatData[] => {
+  const data: IFormatData[] = [];
+  let currentValue = 55;
+
+  for (let i = 0; i < 15; i++) {
+    const variation = Math.random() * 12 - 6;
+    currentValue = Math.min(95, Math.max(35, currentValue + variation));
+
+    data.push({
+      time: `T-${14 - i}`,
+      value: Number(currentValue.toFixed(2)),
+    });
+  }
+
+  return data;
+};
+
 export const BottomGraphic = () => {
-  const [chartData] = useState<IFormatData[]>([]);
+  const [chartData] = useState<IFormatData[]>(() =>
+    generateMockMemoryData()
+  );
+
   const { theme, mode } = useZTheme();
   const { t } = useTranslation();
-
-  const lastMemoryData =
-    Number(chartData[chartData.length - 1]?.value.toFixed(2)) || 0;
-
-  const valueColor = lastMemoryData < 80 ? theme[mode].ok : theme[mode].danger;
   const { currentVMName: vmName } = useZGlobalVar();
 
-  // if (!chartData.length) return <EmptyFeedBack />;
+  const lastMemoryData =
+    chartData[chartData.length - 1]?.value || 0;
+
+  const valueColor =
+    lastMemoryData < 80 ? theme[mode].ok : theme[mode].danger;
 
   return (
     <Stack
@@ -49,27 +70,34 @@ export const BottomGraphic = () => {
         {`${t("graphics.memoryUsage")} - ${vmName}`}{" "}
         <span style={{ color: theme[mode].gray, fontWeight: "300" }}>
           {t("graphics.currentUse")}{" "}
-          <span style={{ color: valueColor }}>{lastMemoryData}%</span>
+          <span style={{ color: valueColor }}>
+            {lastMemoryData.toFixed(2)}%
+          </span>
         </span>
       </Typography>
+
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 0, bottom: 20 }} // Margens ajustadas
+          margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={theme[mode].gray} />
+
           <XAxis
             dataKey="time"
+            tick={{ fill: theme[mode].dark, fontSize: 10 }}
             label={{
               value: t("graphics.time"),
               position: "insideBottomRight",
               offset: -5,
-              fill: theme[mode].dark, // Cor branca
+              fill: theme[mode].dark,
               fontSize: 10,
             }}
-            tick={{ fill: theme[mode].dark, fontSize: 10 }} // Ticks do eixo X em branco e menores
           />
+
           <YAxis
+            tick={{ fill: theme[mode].dark, fontSize: 10 }}
+            domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.16)]}
             label={{
               value: t("graphics.memoryUsage"),
               angle: -90,
@@ -78,26 +106,35 @@ export const BottomGraphic = () => {
               fontSize: 10,
               dy: 48,
             }}
-            tick={{ fill: theme[mode].dark, fontSize: 10 }}
-            domain={[0, (dataMax: number) => (dataMax * 1.16).toFixed(1)]} // Adicionando margem acima do maior valor
           />
+
           <Tooltip
-            formatter={(value) => parseFloat(value as string).toFixed(2)} // Formata para 2 casas decimais
+            formatter={(value) =>
+              `${Number(value).toFixed(2)}%`
+            }
           />
+
           <Legend />
+
           <ReferenceLine
-            y={80} // Linha vermelha de threshold (uso crítico acima de 90%)
+            y={80}
             stroke="red"
             strokeDasharray="3 3"
           />
-          <Bar dataKey="value" fill="#413ea0" legendType="none" />
+
+          <Bar
+            dataKey="value"
+            fill="#413ea0"
+            legendType="none"
+          />
+
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#ff7300" // Cor verde => #4CAF50 | cor azul => #8884d8
+            stroke="#ff7300"
             dot={false}
             isAnimationActive={false}
-            legendType="none" // Remove a legenda
+            legendType="none"
           />
         </ComposedChart>
       </ResponsiveContainer>

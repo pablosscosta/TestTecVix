@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Area,
-  AreaChart, // Para as linhas de threshold
+  AreaChart,
 } from "recharts";
 import { Stack, Typography } from "@mui/material";
 import { useZTheme } from "../../../../stores/useZTheme";
@@ -16,10 +16,35 @@ import { useTranslation } from "react-i18next";
 import { useZGlobalVar } from "../../../../stores/useZGlobalVar";
 import { IFormatData } from "../../../../types/socketType";
 
+/**
+ * Gera dados mockados de uso de CPU
+ */
+const generateMockCpuData = (): IFormatData[] => {
+  const data: IFormatData[] = [];
+  let currentValue = 45;
+
+  for (let i = 0; i < 15; i++) {
+    // variação suave
+    const variation = Math.random() * 10 - 5;
+    currentValue = Math.min(95, Math.max(30, currentValue + variation));
+
+    data.push({
+      time: `T-${14 - i}`,
+      value: Number(currentValue.toFixed(2)),
+    });
+  }
+
+  return data;
+};
+
 export const MainGraphic = () => {
-  const [chartData] = useState<IFormatData[]>([]);
+  const [chartData] = useState<IFormatData[]>(() =>
+    generateMockCpuData()
+  );
+
   const { theme, mode } = useZTheme();
   const { t } = useTranslation();
+  const { currentVMName: vmName } = useZGlobalVar();
 
   const lastCpuUsage = chartData[chartData.length - 1]?.value || 0;
 
@@ -27,12 +52,8 @@ export const MainGraphic = () => {
     lastCpuUsage < 70
       ? theme[mode].ok
       : lastCpuUsage < 90
-        ? theme[mode].warning
-        : theme[mode].danger;
-
-  const { currentVMName: vmName } = useZGlobalVar();
-
-  // if (!chartData.length) return <EmptyFeedBack />;
+      ? theme[mode].warning
+      : theme[mode].danger;
 
   return (
     <Stack
@@ -53,27 +74,34 @@ export const MainGraphic = () => {
         <span style={{ color: theme[mode].gray, fontWeight: "300" }}>
           {" "}
           {t("graphics.currentUse")}{" "}
-          <span style={{ color: valueColor }}>{lastCpuUsage.toFixed(3)}%</span>
+          <span style={{ color: valueColor }}>
+            {lastCpuUsage.toFixed(2)}%
+          </span>
         </span>
       </Typography>
+
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 0, bottom: 20 }} // Aumentando o espaço superior e inferior
+          margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={theme[mode].gray} />
+
           <XAxis
             dataKey="time"
+            tick={{ fill: theme[mode].dark, fontSize: 10 }}
             label={{
               value: t("graphics.time"),
               position: "insideBottomRight",
               offset: -5,
-              fill: theme[mode].dark, // Cor branca
-              fontSize: 10, // Fonte menor
+              fill: theme[mode].dark,
+              fontSize: 10,
             }}
-            tick={{ fill: theme[mode].dark, fontSize: 10 }} // Ticks do eixo X em branco e menores
           />
+
           <YAxis
+            tick={{ fill: theme[mode].dark, fontSize: 10 }}
+            domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.16)]}
             label={{
               value: t("graphics.cpuUsage"),
               angle: -90,
@@ -81,23 +109,28 @@ export const MainGraphic = () => {
               fill: theme[mode].dark,
               fontSize: 10,
             }}
-            tick={{ fill: theme[mode].dark, fontSize: 10 }}
-            domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.16)]} // Adicionando margem acima do maior valor
           />
+
           <Tooltip
-            formatter={(value) => parseFloat(value as string).toFixed(2)} // Formata para 2 casas decimais
+            formatter={(value) =>
+              `${Number(value).toFixed(2)}%`
+            }
           />
+
           <Legend />
+
           <ReferenceLine
-            y={70} // Linha amarela de threshold (uso alto acima de 70%)
+            y={70}
             stroke="yellow"
             strokeDasharray="3 3"
           />
+
           <ReferenceLine
-            y={90} // Linha vermelha de threshold  (uso critico acima de 90%)
+            y={90}
             stroke="red"
             strokeDasharray="3 3"
           />
+
           <Area
             type="monotone"
             dataKey="value"
@@ -105,8 +138,7 @@ export const MainGraphic = () => {
             fill="#8884d8"
             dot={false}
             isAnimationActive={false}
-            legendType="none" // retira legenda
-            // name="CPU Usage (%)" // renomeia a legenda
+            legendType="none"
           />
         </AreaChart>
       </ResponsiveContainer>
