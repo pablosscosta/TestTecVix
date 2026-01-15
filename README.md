@@ -491,7 +491,7 @@ git commit -m "docs: atualiza README com credenciais de teste"
 
 ### ➕ Criação de VM
 
-- [ ] Implementar a lista dropdown dos **sistemas operacionais**
+- [x] Implementar a lista dropdown dos **sistemas operacionais**
 - [ ] Implementar corretamente a **criação de uma VM**
 - [ ] Possibilitar a aceitação de **configurações dos cards de sugestão**
 
