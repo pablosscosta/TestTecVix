@@ -247,8 +247,8 @@
             "null"
           ],
           "enum": [
-            "LOCAL",
-            "CLOUD"
+            "usa_miami",
+            "bre_barueri"
           ]
         },
         "createdAt": {
