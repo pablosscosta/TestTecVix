@@ -1,7 +1,6 @@
 import { Box, Button, Divider, IconButton, Stack } from "@mui/material";
 import { useZTheme } from "../../../../stores/useZTheme";
 import { useTranslation } from "react-i18next";
-
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
@@ -86,6 +85,7 @@ export const VmCard = ({
   const {
     updateNameVm,
     updateDiskSizeVm,
+    updateVMStatus,
     getVMById: getVMByIdResource,
     isLoading,
     getOS,
@@ -117,12 +117,18 @@ export const VmCard = ({
 
   const handleConfirm = async () => {
     if (statusState !== preStatusState) {
-      setPreStatusState(statusState);
+      await updateVMStatus({
+        idVM: vmId,
+        status: statusState as "RUNNING" | "STOPPED" | "PAUSED",
+      });
 
+      setPreStatusState(statusState);
       await getVMById();
     }
+
     setShowConfirmation(false);
   };
+
 
   const handlePaused = () => {
     setStatusState("PAUSED");
