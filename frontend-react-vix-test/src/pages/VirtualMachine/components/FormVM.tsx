@@ -54,6 +54,7 @@ export const FormVM = () => {
     localizationOptions,
     networkTypeOptions,
     isLoadingCreateVM,
+    osOptions,
   } = useVmResource();
 
   const {
@@ -225,7 +226,16 @@ export const FormVM = () => {
             value={vmLocalization}
             onChange={setVmLocalization}
           />
+          <DropDowText
+            label={t("createVm.operationalSystem")}
+            data={osOptions}
+            value={vmSO}
+            onChange={setVmSO}
+          />
+
+          {/*
           <BTNISOsSection vmNameLabel={vmSO?.label} />
+          */}
         </Stack>
         {/* Sliders */}
         <Stack

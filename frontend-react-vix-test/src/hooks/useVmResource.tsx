@@ -20,6 +20,22 @@ enum ETaskLocation {
   usa_miami = "usa_miami",
 }
 
+export enum EOSType {
+  windows_server_2022_standard = "windows_server_2022_standard",
+  windows_server_2019_standard = "windows_server_2019_standard",
+  startl_edge_protect = "startl_edge_protect",
+
+  ubuntu_24_04_lts = "ubuntu_24_04_lts",
+  ubuntu_22_04_lts = "ubuntu_22_04_lts",
+  ubuntu_20_04_lts = "ubuntu_20_04_lts",
+
+  debian_12 = "debian_12",
+  debian_11 = "debian_11",
+
+  centos_stream_10 = "centos_stream_10",
+  centos_stream_9 = "centos_stream_9",
+}
+
 export const useVmResource = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCreateVM, setIsLoadingCreateVM] = useState(false);
@@ -83,6 +99,50 @@ export const useVmResource = () => {
       label: t("createVm.brSaoPaulo"),
     },
   ];
+
+  const osOptions: { value: EOSType; label: string }[] = [
+    {
+      value: EOSType.windows_server_2022_standard,
+      label: "Windows Server 2022 Standard",
+    },
+    {
+      value: EOSType.windows_server_2019_standard,
+      label: "Windows Server 2019 Standard",
+    },
+    {
+      value: EOSType.startl_edge_protect,
+      label: "Startl Edge Protect",
+    },
+    {
+      value: EOSType.ubuntu_24_04_lts,
+      label: "Ubuntu 24.04 LTS (Noble Numbat)",
+    },
+    {
+      value: EOSType.ubuntu_22_04_lts,
+      label: "Ubuntu 22.04 LTS (Jammy Jellyfish)",
+    },
+    {
+      value: EOSType.ubuntu_20_04_lts,
+      label: "Ubuntu 20.04 LTS (Focal Fossa)",
+    },
+    {
+      value: EOSType.debian_12,
+      label: "Debian 12 (Bookworm)",
+    },
+    {
+      value: EOSType.debian_11,
+      label: "Debian 11 (Bullseye)",
+    },
+    {
+      value: EOSType.centos_stream_10,
+      label: "CentOS Stream 10",
+    },
+    {
+      value: EOSType.centos_stream_9,
+      label: "CentOS Stream 9",
+    },
+  ];
+
 
   const networkTypeOptions: { value: ENetworkType; label: string }[] = [
     {
@@ -336,6 +396,7 @@ export const useVmResource = () => {
     getNetworkType,
     storageOptions,
     localizationOptions,
+    osOptions,
     isLoading,
     networkTypeOptions,
     isLoadingCreateVM,
